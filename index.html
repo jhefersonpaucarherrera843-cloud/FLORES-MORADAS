@@ -1,0 +1,460 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi universo para ti 💜🍓</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  height:100vh;overflow:hidden;background:#080014;color:white;
+  font-family:Georgia,serif
+}
+
+#escena{
+  display:none;
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  perspective:1000px;
+  background:radial-gradient(ellipse at center,#531574,#200635 48%,#05000c);
+}
+
+.nebula{
+  position:absolute;width:60vw;height:60vw;border-radius:50%;
+  filter:blur(80px);opacity:.35;
+  animation:nebula 12s ease-in-out infinite alternate
+}
+.n1{background:#b12cff;top:-20%;left:-20%}
+.n2{background:#ed36c6;bottom:-30%;right:-20%;animation-delay:-5s}
+.n3{background:#4838ff;top:35%;left:35%;animation-delay:-8s}
+@keyframes nebula{to{transform:scale(1.25) translate(25px,-20px);opacity:.55}}
+
+.estrella{
+  position:absolute;background:white;border-radius:50%;
+  box-shadow:0 0 8px white,0 0 15px #dca7ff;
+  animation:brillo var(--dur) ease-in-out infinite alternate
+}
+@keyframes brillo{to{opacity:.15;transform:scale(.5)}}
+
+.luna{
+  position:absolute;right:12%;top:14%;width:75px;height:75px;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,white,#d7a5ff 45%,#8538c2);
+  box-shadow:0 0 40px #ca83ff;animation:flota 5s ease-in-out infinite
+}
+@keyframes flota{50%{transform:translateY(-15px)}}
+
+/* Lluvia de fresas */
+.fresa{
+  position:absolute;top:-70px;left:var(--x);
+  font-size:var(--size);opacity:0;
+  filter:drop-shadow(0 0 9px #ff4b89);
+  animation:caerFresa var(--dur) linear var(--delay) infinite;
+  will-change:transform
+}
+@keyframes caerFresa{
+  0%{transform:translate3d(0,-10vh,-100px) rotate(0deg);opacity:0}
+  8%{opacity:1}
+  50%{transform:translate3d(var(--lado),55vh,100px) rotate(220deg)}
+  90%{opacity:.9}
+  100%{transform:translate3d(calc(var(--lado)*-.4),115vh,-100px) rotate(500deg);opacity:0}
+}
+
+/* Lluvia de frases */
+.frase{
+  position:absolute;
+  top:-100px;
+  left:var(--x);
+  width:max-content;
+  max-width:260px;
+  color:#ffe5ff;
+  font-size:var(--size);
+  font-weight:bold;
+  letter-spacing:.5px;
+  text-align:center;
+  text-shadow:0 0 8px #e7a3ff,0 0 20px #bb45ff,0 0 35px #a42cff;
+  opacity:0;
+  animation:caerFrase var(--dur) linear var(--delay) infinite;
+  will-change:transform
+}
+@keyframes caerFrase{
+  0%{transform:translate3d(0,-15vh,-180px) rotateY(-30deg);opacity:0}
+  10%{opacity:1}
+  45%{transform:translate3d(var(--lado),45vh,100px) rotateY(25deg)}
+  90%{opacity:.9}
+  100%{transform:translate3d(calc(var(--lado)*-.4),115vh,-120px) rotateY(-20deg);opacity:0}
+}
+
+/* Flores 3D */
+.jardin{
+  position:absolute;bottom:-15px;width:100%;height:32%;
+  display:flex;align-items:flex-end;justify-content:space-around;
+  pointer-events:none
+}
+.planta{
+  position:relative;width:60px;height:var(--altura);
+  transform-origin:bottom;
+  animation:balanceo var(--mov) ease-in-out infinite alternate
+}
+@keyframes balanceo{to{transform:rotate(8deg) translateY(-8px)}}
+.tallo{
+  position:absolute;bottom:0;left:28px;width:5px;height:65%;
+  background:linear-gradient(90deg,#126a36,#63ed86,#18552b);
+  border-radius:10px
+}
+.hoja{
+  position:absolute;bottom:32%;width:30px;height:15px;
+  background:linear-gradient(135deg,#7aff9b,#12652f);
+  border-radius:100% 0 100% 0
+}
+.hoja.izq{left:0;transform:rotate(20deg)}
+.hoja.der{right:0;bottom:43%;transform:scaleX(-1) rotate(20deg)}
+.flor{
+  position:absolute;top:0;left:50%;width:64px;height:64px;
+  transform:translateX(-50%);
+  animation:girarFlor var(--giro) linear infinite;
+  filter:drop-shadow(0 0 12px #e9a1ff)
+}
+@keyframes girarFlor{to{rotate:360deg}}
+.petalo{
+  position:absolute;left:22px;top:0;width:21px;height:34px;
+  border-radius:50%;transform-origin:10px 32px;
+  background:linear-gradient(to top,#8b31df,#e9b4ff,#fff0ff)
+}
+.centro{
+  position:absolute;top:23px;left:23px;width:18px;height:18px;
+  border-radius:50%;background:#ffda67;box-shadow:0 0 15px #ffbc38
+}
+
+/* Título y botones */
+.encabezado{
+  position:absolute;top:8%;width:100%;padding:0 15px;
+  text-align:center;z-index:5
+}
+.encabezado h1{
+  font-size:clamp(27px,5vw,52px);color:#ffe5ff;
+  text-shadow:0 0 15px #e69cff,0 0 35px #b443ff;
+  animation:resplandor 3s ease-in-out infinite alternate
+}
+.encabezado p{margin-top:13px;color:#e9c7ff;letter-spacing:2px}
+@keyframes resplandor{to{text-shadow:0 0 30px #f5c3ff,0 0 60px #b443ff}}
+
+.controles{
+  position:absolute;bottom:7%;width:100%;z-index:10;
+  display:flex;justify-content:center;gap:12px;flex-wrap:wrap;padding:0 12px
+}
+button{
+  padding:13px 20px;border:1px solid #f2c9ff;border-radius:30px;
+  color:white;background:linear-gradient(135deg,#a332d0dd,#56208ddd);
+  box-shadow:0 0 20px #b14aff66;cursor:pointer;font-size:14px
+}
+button:hover{transform:translateY(-3px);box-shadow:0 0 28px #e09cff}
+
+#modal{
+  display:none;position:fixed;inset:0;z-index:30;
+  align-items:center;justify-content:center;padding:20px;
+  background:#080014dd;backdrop-filter:blur(8px)
+}
+.carta{
+  max-width:460px;width:100%;padding:32px 25px;
+  border:1px solid #e7b3ff;border-radius:25px;text-align:center;
+  background:linear-gradient(145deg,#48145f,#160821);
+  box-shadow:0 0 45px #b445ff77;
+  animation:entrada .5s ease-out
+}
+@keyframes entrada{from{transform:scale(.7) rotateX(20deg);opacity:0}to{transform:scale(1);opacity:1}}
+.carta h2{color:#ffdfff;margin-bottom:18px}
+.carta p{line-height:1.9;color:#f7eaff;margin-bottom:22px}
+
+@media(max-width:600px){
+  .luna{width:50px;height:50px;right:8%;top:19%}
+  .jardin{height:25%}
+  .frase{max-width:190px;white-space:normal}
+  .controles{bottom:5%}
+  button{padding:11px 14px}
+}
+</style>
+</head>
+
+  <body>
+       
+
+<!-- PANTALLA DE INICIO -->
+<div id="pantallaInicio" style="
+  position:fixed;
+  inset:0;
+  z-index:999999;
+  background:radial-gradient(circle at center,#542080,#17052f 75%);
+  color:white;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:25px;
+  box-sizing:border-box;
+">
+  <div style="font-size:65px;">💜🌸✨</div>
+
+  <h1 style="
+    font-size:clamp(30px,6vw,55px);
+    text-shadow:0 0 20px #e9a8ff;
+    margin:20px 0;
+  ">
+    Para la mejor amiga del mundo
+  </h1> CLARITA
+
+  <p style="font-size:20px;">
+    Tengo algo especial para ti 💖
+  </p>
+
+  <button onclick="abrirPagina()" style="
+    margin-top:25px;
+    padding:16px 30px;
+    border:2px solid white;
+    border-radius:35px;
+    background:linear-gradient(135deg,#d946ef,#7c3aed);
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+    box-shadow:0 0 25px #d946ef;
+  ">
+    Presiona aquí 💌
+  </button>
+</div>
+<div id="escena"></div>
+    <div class="nebula n1"></div>
+    <div class="nebula n2"></div>
+    <div class="nebula n3"></div>
+    <div class="luna"></div>
+
+    <div class="encabezado">
+      <h1>“Mi mundo es un poquito más bonito desde que te conozco 💞”</h1>
+      <p>Entre estrellas y fresas, pensé en ti 🍓✨</p>
+    </div>
+
+    <div id="estrellas"></div>
+    <div id="lluviaFresas"></div>
+    <div id="lluviaFrases"></div>
+    <div id="corazones"></div>
+    <div class="jardin" id="jardin"></div>
+
+    <div class="controles">
+      <button id="btnCarta">💌 Abrir mi carta</button>
+      
+    </div>
+  </div>
+
+<div id="modal">
+  <div class="carta">
+    <h2>💌 Para mi mejor amiga 💜</h2>
+    <p>
+      Hay personas que llegan a nuestra vida sin avisar y, poco a poco, se convierten en alguien muy especial. Tú eres una de esas personas para mí. 🌷
+
+Quiero que sepas que me alegra muchísimo haberte conocido. Gracias por cada conversación, por las risas, por los momentos bonitos y hasta por esos pequeños detalles que quizás parecen simples, pero que para mí significan mucho. 🥹💗
+        
+Tal vez no siempre encuentre las palabras exactas para decirte cuánto aprecio tu amistad, pero quiero que nunca olvides lo importante que eres para mí. Eres una persona increíble y mereces que la vida te regale muchísimas cosas bonitas. ✨
+
+Espero que, cuando tengas un día difícil, recuerdes que hay alguien que desea verte feliz, que se alegra por tus logros y que quiere verte cumplir todos tus sueños. 🌻
+
+Gracias por ser mi mejor amiga. 💞
+
+    </p>
+    <button id="cerrar">Cerrar carta 💕</button>
+  </div>
+</div>
+
+<script>
+  function abrirPagina() {
+  document.getElementById("pantallaInicio").style.display = "none";
+  document.getElementById("escena").style.display = "block";
+}
+const frases = [
+ "Gracias por existir, mejor amiga 💖",
+  "Eres una personita muy especial para mí 🫶",
+  "La vida es más bonita con tu amistad 🌷",
+  "No necesito mil amigas, con una como tú basta 💜",
+  "Gracias por escucharme cuando lo necesito 🥹",
+  "Tu amistad es uno de mis regalos favoritos 🎁",
+  "Siempre tendrás un lugar especial en mi corazón 💗",
+  "Eres de esas personas que hacen bonito el mundo 🌎",
+  "Qué suerte la mía de haberte conocido 🍀",
+  "Nunca olvides lo increíble que eres ✨",
+  "Espero verte sonreír todos los días 🌻",
+  "Gracias por cada risa y cada recuerdo 😂💞",
+  "Contigo hasta los días difíciles son más fáciles 🫂",
+  "Una amistad como la tuya vale muchísimo 💎",
+  "Eres mi compañera de locuras favoritas 🤭💖",
+  "Pase lo que pase, deseo que siempre te vaya bonito 🌈",
+  "Tu felicidad también me hace feliz 🥰",
+  "Gracias por ser tú, sin cambiar nada 🌹",
+  "Las mejores personas llegan sin avisar 💫",
+  "Nuestra amistad es un pequeño universo de recuerdos 🌌",
+  "Que nunca se apague esa luz tan bonita que tienes ⭐",
+  "Siempre voy a desear cosas lindas para ti 🌸",
+  "Amiga, mereces todo lo bonito de este mundo 💝",
+  "Gracias por convertir momentos simples en recuerdos especiales 📸",
+  "Aunque pasen los años, espero que sigamos riéndonos juntas 💕",
+  "Tu amistad hace que todo tenga un poquito más de magia 🪄",
+  "Nunca dudes de lo valiosa que eres 💜",
+  "Por más aventuras, risas y recuerdos contigo 🎀",
+  "Eres una amiga que se siente como familia 🏡💗",
+  "Que el universo te devuelva toda la alegría que das 🌠",
+  "Aquí tienes a alguien que se alegra de tenerte en su vida 🫶",
+  "Gracias por ser parte de mi historia 📖💖",
+  "Amistades bonitas, como la nuestra, se cuidan con el corazón 🌷",
+  "Te mereces días llenos de paz, amor y felicidad ☀️",
+  "Mi mundo es un poquito más bonito desde que te conozco 💞",
+  "Nunca dejes de ser esa persona tan especial 🌟"
+];
+
+const estrellas = document.getElementById("estrellas");
+const lluviaFresas = document.getElementById("lluviaFresas");
+const lluviaFrases = document.getElementById("lluviaFrases");
+const jardin = document.getElementById("jardin");
+const corazones = document.getElementById("corazones");
+
+// Estrellas
+for(let i=0;i<180;i++){
+  const e=document.createElement("div");
+  e.className="estrella";
+  const s=Math.random()*3+1;
+  e.style.width=s+"px";
+  e.style.height=s+"px";
+  e.style.left=Math.random()*100+"%";
+  e.style.top=Math.random()*100+"%";
+  e.style.setProperty("--dur",(1+Math.random()*4)+"s");
+  e.style.animationDelay=Math.random()*5+"s";
+  estrellas.appendChild(e);
+}
+
+// Fresitas que caen
+function crearFresa(){
+  const f=document.createElement("div");
+  f.className="fresa";
+  f.textContent="🍓";
+  f.style.setProperty("--x",Math.random()*100+"vw");
+  f.style.setProperty("--size",(20+Math.random()*26)+"px");
+  f.style.setProperty("--dur",(5+Math.random()*7)+"s");
+  f.style.setProperty("--delay",(-Math.random()*12)+"s");
+  f.style.setProperty("--lado",(Math.random()*180-90)+"px");
+  lluviaFresas.appendChild(f);
+}
+for(let i=0;i<35;i++) crearFresa();
+
+// Lluvia limitada de frases
+
+let indiceFrase = 0;
+
+function crearFrase() {
+  if (lluviaFrases.children.length >= 4) return;
+
+  const f = document.createElement("div");
+  f.className = "frase";
+  f.textContent = frases[indiceFrase % frases.length];
+  indiceFrase++;
+
+  // Distribuye las frases por toda la pantalla
+  f.style.setProperty("--x", (Math.random() * 90 + 2) + "vw");
+  f.style.setProperty("--size", (14 + Math.random() * 4) + "px");
+  f.style.setProperty("--dur", (9 + Math.random() * 4) + "s");
+  f.style.setProperty("--delay", "0s");
+  f.style.setProperty("--lado", (Math.random() * 100 - 50) + "px");
+
+  lluviaFrases.appendChild(f);
+
+  setTimeout(() => f.remove(), 13000);
+}
+
+crearFrase();
+setInterval(crearFrase, 3000);
+
+// Flores del jardín
+for(let i=0;i<9;i++){
+  const planta=document.createElement("div");
+  planta.className="planta";
+  planta.style.setProperty("--altura",(100+Math.random()*120)+"px");
+  planta.style.setProperty("--mov",(2.5+Math.random()*3)+"s");
+  planta.style.animationDelay=(-Math.random()*4)+"s";
+
+  const tallo=document.createElement("div");
+  tallo.className="tallo";
+  planta.appendChild(tallo);
+
+  const h1=document.createElement("div");
+  h1.className="hoja izq";
+  planta.appendChild(h1);
+
+  const h2=document.createElement("div");
+  h2.className="hoja der";
+  planta.appendChild(h2);
+
+  const flor=document.createElement("div");
+  flor.className="flor";
+  flor.style.setProperty("--giro",(12+Math.random()*25)+"s");
+
+  for(let p=0;p<8;p++){
+    const petalo=document.createElement("div");
+    petalo.className="petalo";
+    petalo.style.transform=`rotate(${p*45}deg)`;
+    flor.appendChild(petalo);
+  }
+
+  const centro=document.createElement("div");
+  centro.className="centro";
+  flor.appendChild(centro);
+
+  planta.appendChild(flor);
+  jardin.appendChild(planta);
+}
+
+// Corazones flotantes
+function crearCorazon(){
+  const c=document.createElement("div");
+  c.className="corazon";
+  c.textContent=Math.random()>.5?"💜":"💗";
+  c.style.left=Math.random()*100+"vw";
+  c.style.fontSize=(18+Math.random()*25)+"px";
+  c.style.position="absolute";
+  c.style.bottom="-50px";
+  c.style.animation=`subir ${5+Math.random()*5}s linear forwards`;
+  c.style.setProperty("--lado",(Math.random()*160-80)+"px");
+  c.style.setProperty("--size",(18+Math.random()*28)+"px");
+  c.style.setProperty("--dur",(5+Math.random()*5)+"s");
+  corazones.appendChild(c);
+  setTimeout(()=>c.remove(),11000);
+}
+
+// Añadir animación de subida para los corazones
+const estiloCorazones=document.createElement("style");
+estiloCorazones.textContent=`
+@keyframes subir {
+  0% { transform:translateY(0) scale(.5); opacity:0; }
+  15% { opacity:1; }
+  100% { transform:translate3d(var(--lado),-115vh,100px) scale(1.5); opacity:0; }
+}`;
+document.head.appendChild(estiloCorazones);
+
+setInterval(crearCorazon, 2500);
+
+// Carta
+const modal=document.getElementById("modal");
+document.getElementById("btnCarta").addEventListener("click",()=>{
+  modal.style.display="flex";
+});
+document.getElementById("cerrar").addEventListener("click",()=>{
+  modal.style.display="none";
+});
+modal.addEventListener("click",e=>{
+  if(e.target===modal) modal.style.display="none";
+});
+
+</script>
+</div>  
+</body>
+</html>
+
+
